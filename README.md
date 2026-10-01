@@ -1,115 +1,91 @@
 # Tabung Yuk
 
-Aplikasi tabungan pelajar untuk proyek lintas bidang Keuangan dan Informatika.
-Kelompok 5: Farisah, Benaya, Andrian, Almi, Lutfi (mengikuti contoh PDF).
+**Sedikit jadi bukit.**
 
-HTML + PHP + CSS, dengan sedikit JavaScript untuk tombol nominal, tampilkan password, dan hitung mundur. Semua alur utama tetap berjalan tanpa JavaScript. Aplikasi tidak membutuhkan database, Composer, framework, atau CDN. Localhost dapat berjalan offline; Vercel mengunduh runtime PHP saat deployment.
+Tabung Yuk adalah aplikasi web untuk merencanakan tujuan tabungan, mencatat deposit, dan memantau progres menabung. Dikembangkan sebagai proyek lintas bidang Keuangan dan Informatika, aplikasi ini menggunakan HTML, PHP, CSS, dan JavaScript tanpa database.
 
-## Buka sebagai website online
+[**Buka aplikasi**](https://tabung-yuk.vercel.app/)
 
-Repository ini sudah dilengkapi konfigurasi Vercel. Ikuti **[panduan Vercel dari HP](VERCEL.md)**: impor repository, gunakan preset **Other**, dan atur environment `TABUNG_APP_KEY`. Login demo tetap `farisah01` / `tabung123`.
+> Aplikasi berjalan dalam mode simulasi. Saldo dan konfirmasi transaksi merupakan data latihan; tampilan QRIS tidak terhubung dengan layanan verifikasi pembayaran.
 
-Vercel memakai cookie terenkripsi untuk session tanpa database. Localhost memakai session PHP biasa. Sesi Vercel maksimal 4 jam tanpa aktivitas, 10 tujuan, dan 30 transaksi; gunakan satu tab secara berurutan untuk demo. Pembayaran tetap simulasi.
+## Fitur
 
-## Menjalankan dengan XAMPP (Windows)
+- Login dengan profil pengguna sesuai akun yang digunakan.
+- Pembuatan tujuan tabungan dengan target, nominal rutin, serta jadwal harian atau mingguan.
+- Deposit yang dikaitkan dengan tujuan tabungan.
+- Nominal pembayaran dengan tambahan kode acak 001–999.
+- Halaman QRIS dengan batas waktu, konfirmasi simulasi, dan pembatalan transaksi.
+- Dashboard saldo dan progres tiap tujuan.
+- Riwayat transaksi dengan filter status.
+- Tampilan responsif untuk desktop dan perangkat seluler.
 
-1. Ekstrak ZIP. Pastikan folder aplikasi bernama `tabung-yuk`.
-2. Salin folder tersebut ke `C:\xampp\htdocs\tabung-yuk`.
-3. Di XAMPP Control Panel, klik **Start** pada **Apache**. MySQL tidak perlu dijalankan.
-4. Buka `http://localhost/tabung-yuk/` di browser. Jika Apache memakai port lain, tambahkan port itu, misalnya `http://localhost:8080/tabung-yuk/`.
-5. Masuk dengan akun demo di bawah.
+## Halaman aplikasi
 
-Pastikan `index.php` berada langsung di `C:\xampp\htdocs\tabung-yuk\index.php`, bukan di folder bertingkat dua. Jangan membuka file PHP dengan klik dua kali atau memakai VS Code Live Server, karena PHP harus dijalankan melalui server PHP.
+| Halaman | Fungsi |
+| --- | --- |
+| Login | Autentikasi pengguna. |
+| Beranda | Ringkasan tabungan dan akses menu utama. |
+| Jadwal tabungan | Pengaturan tujuan, target, dan jadwal menabung. |
+| Deposit | Pengisian nominal setoran dan tujuan tabungan. |
+| Pembayaran | Detail nominal, gambar QRIS, dan status transaksi. |
+| Dashboard | Ringkasan saldo, target, dan progres tabungan. |
+| Riwayat | Daftar transaksi beserta statusnya. |
 
-## Akun demo
+Alur utama: **Login → Buat tujuan → Deposit → Konfirmasi simulasi → Dashboard dan riwayat.**
 
-- Username: `farisah01`
-- Password: `tabung123`
+## Teknologi
 
-Akun untuk tugas localhost, ditetapkan dalam `includes/app.php`. Ini bukan sistem akun untuk penggunaan publik.
+| Komponen | Teknologi |
+| --- | --- |
+| Antarmuka | HTML dan CSS |
+| Logika aplikasi | PHP |
+| Interaksi antarmuka | JavaScript |
+| Penyimpanan sementara | Session PHP atau cookie terenkripsi |
+| Hosting | Vercel dengan runtime komunitas `vercel-php` |
 
-## Alternatif: PHP bawaan
+## Menjalankan secara lokal
 
-Untuk localhost gunakan PHP 7.4 atau lebih baru (disarankan PHP 8.x). Mode cookie di Vercel memakai PHP 8.5 beserta OpenSSL dan zlib yang disertakan runtime. Dari terminal di dalam folder `tabung-yuk`, jalankan:
+Gunakan PHP 7.4 atau lebih baru; PHP 8.x direkomendasikan.
 
 ```sh
+git clone https://github.com/alicee98/tabung-yuk.git
+cd tabung-yuk
 php -S localhost:8000
 ```
 
-Buka `http://localhost:8000/`. Hentikan server dengan Ctrl+C.
+Buka **http://localhost:8000/**. Aplikasi juga dapat dijalankan melalui Apache/XAMPP tanpa MySQL. Akun percobaan dan profil pengguna didefinisikan di `includes/app.php`.
 
-## Tujuh halaman aplikasi
+## Deployment
 
-| Halaman | File | Fungsi |
-|---|---|---|
-| 1. Login | `login.php` | Username, password, tombol masuk, validasi akun demo. |
-| 2. Beranda | `beranda.php` | Sambutan, saldo ringkas, akses menu, dan jadwal terdekat. |
-| 3. Pembuat jadwal tabungan | `jadwal.php` | Membuat tujuan, target, nominal rutin, frekuensi, tanggal mulai; daftar jadwal dan progres. |
-| 4. Deposit | `deposit.php` | Memilih tujuan, nominal, dan keterangan deposit. |
-| 5. Pembayaran QRIS | `pembayaran.php` | Kolom gambar QRIS, nominal + kode acak, batas waktu, konfirmasi simulasi atau batal. |
-| 6. Dashboard | `dashboard.php` | Total tabungan, total target, progres tiap tujuan, transaksi terbaru. |
-| 7. Riwayat | `riwayat.php` | Semua deposit, filter status, dan tautan detail. |
+Repository menyediakan konfigurasi routing dan runtime PHP melalui `vercel.json` serta `api/index.php`.
 
-`index.php` mengarahkan pengguna ke login/beranda. `logout.php` memproses tombol keluar.
+Impor repository ke Vercel dengan preset **Other**, lalu tetapkan environment variable `TABUNG_APP_KEY` berupa kunci acak minimal 32 karakter pada environment deployment yang digunakan. Kunci ini digunakan untuk mengenkripsi session dan tidak boleh disimpan dalam repository. Daftar variabel tersedia di `.env.example`.
 
-## Alur demonstrasi
+## Perilaku data dan transaksi
 
-1. Login menggunakan akun demo.
-2. Pilih **Jadwal tabungan**, isi contoh: “Beli sepatu”, target `500000`, nominal rutin `5000`, frekuensi harian, tanggal mulai hari ini. Klik **Simpan jadwal**.
-3. Pilih **Deposit**, pilih tujuan tadi, isi nominal `5000`, lalu klik **Buat pembayaran**.
-4. Halaman pembayaran menampilkan angka acak. Contoh: Rp5.000 + 123 = Rp5.123. Angka di aplikasi akan bervariasi.
-5. Muat ulang: angka dan ID transaksi tetap sama.
-6. Klik **Simulasikan pembayaran berhasil**. Total pembayaran termasuk kode akan masuk ke saldo sekali saja.
-7. Buka **Dashboard** dan **Riwayat** untuk melihat hasil.
-8. Buat deposit baru untuk melihat kode acak baru. Coba pembatalan dan filter riwayat.
+Kode acak dibuat saat transaksi baru disimpan. Contohnya, deposit **Rp5.000** dengan kode **123** menghasilkan total **Rp5.123**. Memuat ulang halaman tidak mengubah kode transaksi tersebut. Kode baru berbeda dari transaksi sebelumnya dalam session yang sama, tetapi kode historis dapat terulang.
 
-## Sistem kode acak
+Transaksi menunggu berlaku selama **30 menit**. Hanya transaksi yang dikonfirmasi berhasil dalam simulasi yang menambah saldo, termasuk nilai kode acaknya. Konfirmasi ulang transaksi yang sama tidak menggandakan saldo.
 
-- Nominal adalah bilangan bulat positif (Rp1–Rp1.000.000.000).
-- Kode diambil menggunakan `random_int()` dari 1–999, ditampilkan sebagai 001–999.
-- Total dihitung dengan penjumlahan, bukan menggabungkan string: `5000 + 123 = 5123`.
-- Kode baru berbeda dari transaksi tepat sebelumnya. Total tidak bertabrakan dengan transaksi yang masih menunggu di sesi yang sama. Kode historis tetap dapat terulang karena rentang angka terbatas.
-- Kode dan total disimpan di session saat transaksi dibuat. Refresh atau membuka kembali detail tidak mengacak ulang.
-- Deposit berlaku 30 menit. PHP memeriksa waktu kedaluwarsa pada setiap permintaan; hitung mundur browser hanya pelengkap UI.
-- Status: menunggu, berhasil (simulasi), dibatalkan, atau kedaluwarsa.
-- Hanya status berhasil yang masuk saldo. Seluruh total termasuk kode dikreditkan; tidak ada potongan/biaya tersembunyi.
-- Konfirmasi transaksi yang sama tidak bisa menggandakan saldo. Token formulir mencegah pengiriman ganda dari formulir yang sama.
-- Kode acak bukan verifikasi bahwa pembayaran nyata sudah diterima.
+Pada localhost, data menggunakan session PHP di server. Pada Vercel, data menggunakan snapshot session dalam cookie terenkripsi, dengan batas **10 tujuan**, **30 transaksi**, dan masa aktif maksimal **4 jam tanpa aktivitas**. Data bersifat sementara dan dihapus saat keluar; tidak tersedia penyimpanan riwayat permanen.
 
-## Tempat gambar QRIS
+Jadwal tabungan digunakan sebagai acuan menabung dan tidak menjalankan pendebitan otomatis atau pengingat terjadwal.
 
-Pada awalnya tersedia satu kolom gambar kosong bertuliskan **AREA GAMBAR QRIS**.
+## Struktur kode
 
-Untuk menggantinya:
-1. Siapkan gambar PNG QRIS Anda.
-2. Namai persis `qris.png` (huruf kecil).
-3. Simpan di `tabung-yuk/assets/qris.png`.
-4. Muat ulang halaman pembayaran. Gambar otomatis menggantikan placeholder.
+| Lokasi | Isi |
+| --- | --- |
+| `*.php` di direktori utama | Halaman aplikasi, pengalihan, dan logout. |
+| `includes/` | Logika bersama, profil pengguna, dan pengelolaan session. |
+| `assets/` | CSS, JavaScript, ikon, dan gambar QRIS. |
+| `api/` | Entry point dan konfigurasi PHP untuk Vercel. |
+| `tests/` | Skrip pengujian alur aplikasi. |
+| `vercel.json` | Konfigurasi deployment dan routing. |
 
-Tidak perlu mengubah kode. File gambar belum disediakan karena pengguna akan memasukkan sendiri. Jangan hanya mengganti ekstensi JPEG menjadi PNG; ekspor/simpan sebagai PNG.
+## Tim
 
-Aplikasi ini **simulasi tugas sekolah**. Menampilkan gambar QRIS tidak membuat integrasi pembayaran otomatis. Jangan transfer uang asli saat mencoba. Tombol simulasi menandai berhasil tanpa memeriksa bank atau penyedia pembayaran.
+Proyek Kelompok 5: **Farisah, Benaya, Andrian, Almi, dan Lutfi**.
 
-## Data tanpa database
+## Lisensi
 
-Data tujuan, jadwal, dan transaksi tetap diproses melalui `$_SESSION` PHP. Pada localhost penyimpanannya memakai session server biasa; pada Vercel snapshot session disimpan dalam cookie terenkripsi (lihat VERCEL.md). Refresh mempertahankan data selama session masih aktif. Tiap session browser terpisah. Data bersifat sementara; keluar menghapus data, dan sesi dapat hilang ketika cookie/session berakhir atau dibersihkan. Aplikasi tidak menyimpan arsip jangka panjang dan tidak mengirim pengingat terjadwal.
-
-Jadwal harian/mingguan dihitung dari tanggal mulai. Jadwal bukan pendebitan otomatis. Nominal deposit boleh berbeda dari nominal rutin. Target yang tercapai tetap bisa menerima setoran tambahan dan progres visual dibatasi 100%, sementara saldo asli tetap ditampilkan utuh.
-
-## Struktur folder
-
-- `assets/style.css`: seluruh gaya UI responsif.
-- `assets/app.js`: interaksi UI ringan.
-- `assets/favicon.svg`: ikon tab.
-- `assets/QRIS-PETUNJUK.txt`: petunjuk slot QRIS.
-- `includes/app.php`: session, fungsi bantu, kode bersama, navigasi, akun demo.
-- Tujuh file halaman PHP dan file pengarah/logout di folder utama.
-
-## Jika ada kendala
-
-- 404: periksa letak folder dan URL, serta port Apache.
-- Kode PHP tampil sebagai teks: jalankan melalui Apache/PHP, bukan Live Server/file langsung.
-- Apache tidak bisa menyala: pastikan port tidak dipakai aplikasi lain, atau pakai port alternatif sesuai pengaturan XAMPP.
-- Pesan sesi formulir tidak valid: muat ulang halaman dan kirim ulang formulir. Aktifkan cookie browser.
-- Jadwal atau transaksi hilang setelah keluar: ini perilaku session yang memang digunakan untuk tugas tanpa database.
-- Tidak bisa deposit: buat jadwal dahulu; semua deposit wajib terkait dengan sebuah tujuan.
+Lihat [LICENSE](LICENSE) untuk ketentuan GNU General Public License versi 3 yang disertakan dalam repository.
