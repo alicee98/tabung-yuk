@@ -8,7 +8,7 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
  if(!$installment || ($target && $installment>$target)) $errors[]='Nominal rutin harus positif dan tidak melebihi target.';
  if(!in_array($frequency,['Harian','Mingguan'],true)) $errors[]='Pilih frekuensi harian atau mingguan.';
  if(!date_ok($start) || $start<date('Y-m-d') || $start>date('Y-m-d',strtotime('+5 years'))) $errors[]='Tanggal mulai harus hari ini hingga 5 tahun ke depan.';
- if(count($_SESSION['goals'])>=50) $errors[]='Maksimal 50 jadwal dalam satu sesi.';
+ if(count($_SESSION['goals'])>=MAX_GOALS) $errors[]='Maksimal '.MAX_GOALS.' jadwal dalam satu sesi demo.';
  if(!$errors) { $id=bin2hex(random_bytes(8)); $_SESSION['goals'][$id]=['id'=>$id,'name'=>$name,'target'=>$target,'installment'=>$installment,'frequency'=>$frequency,'start'=>$start]; unset($_SESSION['forms']['goal']); notice('Jadwal berhasil dibuat. Sekarang Anda bisa mulai deposit.'); go('jadwal.php'); }
 }
 page_start('Jadwal tabungan','jadwal','Tentukan apa yang ingin dicapai dan seberapa sering Anda menabung.'); errors($errors);
