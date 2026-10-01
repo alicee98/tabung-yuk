@@ -26,8 +26,18 @@ header('Cache-Control: private, no-store');
 header('Vercel-CDN-Cache-Control: no-store');
 header('X-Content-Type-Options: nosniff');
 header('X-Frame-Options: DENY');
-const DEMO_USERNAME = 'farisah01';
+const DEMO_USERNAMES = [
+    'farisah01',
+    'calista2006',
+    'yudha2707'
+];
 const DEMO_PASSWORD = 'tabung123';
+
+const USER_PROFILES = [
+    'farisah01' => ['name' => 'Farisah', 'avatar' => 'F'],
+    'calista2006' => ['name' => 'Calista', 'avatar' => 'C'],
+    'yudha2707' => ['name' => 'Yudha', 'avatar' => 'Y']
+];
 const MAX_AMOUNT = 1000000000;
 function e($value): string { return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8'); }
 function rp($value): string { return 'Rp' . number_format((float)$value, 0, ',', '.'); }
@@ -59,7 +69,10 @@ foreach ($_SESSION['transactions'] as &$t) if ($t['status'] === 'pending' && $t[
 unset($t);
 function require_login(): void { if (empty($_SESSION['user'])) go('login.php'); }
 function page_start(string $title, string $active, string $subtitle): void {
-?><!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title><?=e($title)?> | Tabung Yuk</title><meta name="theme-color" content="#282464"><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="assets/style.css"><script src="assets/app.js" defer></script></head><body><a class="skip" href="#main">Lewati navigasi</a><aside class="sidebar"><a class="brand" href="beranda.php"><span class="brand-mark">ty.</span><span>Tabung Yuk<small>SEDIKIT JADI BUKIT</small></span></a><div class="nav-label">MENU UTAMA</div><nav aria-label="Navigasi utama"><?php foreach (['beranda'=>['home','Beranda'],'jadwal'=>['calendar','Jadwal tabungan'],'deposit'=>['wallet','Deposit'],'dashboard'=>['chart','Dashboard'],'riwayat'=>['clock','Riwayat']] as $file=>$item): ?><a class="nav-item <?=$active===$file?'active':''?>" href="<?=$file?>.php" <?=$active===$file?'aria-current="page"':''?>><?=icon($item[0])?><?=$item[1]?></a><?php endforeach ?></nav><div class="sidebar-bottom"><div class="demo-tag">PROYEK SEKOLAH</div><p>Latihan menabung.<br>Langkah kecil, tujuan besar.</p><form action="logout.php" method="post"><?=csrf()?><button class="logout" type="submit"><?=icon('logout')?>Keluar</button></form></div></aside><div class="workspace"><header class="topbar"><span>Aplikasi tabungan pelajar <span class="pill">Mode simulasi</span></span><div class="user"><span class="avatar">F</span><span>Farisah<small>Anggota Kelompok 5</small></span></div></header><main id="main"><div class="page-heading"><div><div class="eyebrow">TABUNG YUK / <?=e(strtoupper($title))?></div><h1><?=e($title)?></h1><p><?=e($subtitle)?></p></div><span class="date"><?=date('d M Y')?></span></div><?php if(isset($_SESSION['flash'])): [$text,$type]=$_SESSION['flash']; unset($_SESSION['flash']); ?><div class="alert <?=e($type)?>" role="status"><?=e($text)?></div><?php endif ?><?php
+?><!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title><?=e($title)?> | Tabung Yuk</title><meta name="theme-color" content="#282464"><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="assets/style.css"><script src="assets/app.js" defer></script></head><body><a class="skip" href="#main">Lewati navigasi</a><aside class="sidebar"><a class="brand" href="beranda.php"><span class="brand-mark">ty.</span><span>Tabung Yuk<small>SEDIKIT JADI BUKIT</small></span></a><div class="nav-label">MENU UTAMA</div><nav aria-label="Navigasi utama"><?php foreach (['beranda'=>['home','Beranda'],'jadwal'=>['calendar','Jadwal tabungan'],'deposit'=>['wallet','Deposit'],'dashboard'=>['chart','Dashboard'],'riwayat'=>['clock','Riwayat']] as $file=>$item): ?><a class="nav-item <?=$active===$file?'active':''?>" href="<?=$file?>.php" <?=$active===$file?'aria-current="page"':''?>><?=icon($item[0])?><?=$item[1]?></a><?php endforeach ?></nav><div class="sidebar-bottom"><div class="demo-tag">PROYEK SEKOLAH</div><p>Latihan menabung.<br>Langkah kecil, tujuan besar.</p><form action="logout.php" method="post"><?=csrf()?><button class="logout" type="submit"><?=icon('logout')?>Keluar</button></form></div></aside><div class="workspace"><header class="topbar"><span>Aplikasi tabungan pelajar <span class="pill">Mode simulasi</span></span><?php
+$username = (string)($_SESSION['user'] ?? '');
+$profile = USER_PROFILES[$username] ?? ['name' => 'Pengguna', 'avatar' => 'P'];
+?><div class="user"><span class="avatar"><?=e($profile['avatar'])?></span><span><?=e($profile['name'])?><small>Anggota Kelompok 5</small></span></div></header><main id="main"><div class="page-heading"><div><div class="eyebrow">TABUNG YUK / <?=e(strtoupper($title))?></div><h1><?=e($title)?></h1><p><?=e($subtitle)?></p></div><span class="date"><?=date('d M Y')?></span></div><?php if(isset($_SESSION['flash'])): [$text,$type]=$_SESSION['flash']; unset($_SESSION['flash']); ?><div class="alert <?=e($type)?>" role="status"><?=e($text)?></div><?php endif ?><?php
 }
 function page_end(): void { ?><footer class="footer"><span>Tabung Yuk · Kelompok 5</span><span>Data sementara<?=TABUNG_CLOUD_SESSION ? ' · maks. 4 jam tanpa aktivitas' : ''?>. Keluar menghapus data.</span></footer></main></div></body></html><?php }
 function errors(array $errors): void { if ($errors): ?><div class="alert error" role="alert"><strong>Periksa kembali isian Anda.</strong><ul><?php foreach($errors as $error): ?><li><?=e($error)?></li><?php endforeach ?></ul></div><?php endif; }
