@@ -3,8 +3,9 @@ require __DIR__.'/includes/app.php';
 if (!empty($_SESSION['user'])) go('beranda.php');
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
- if (trim((string)($_POST['username'] ?? '')) === DEMO_USERNAME && hash_equals(DEMO_PASSWORD, (string)($_POST['password'] ?? ''))) {
-  session_regenerate_id(true); $_SESSION['user'] = DEMO_USERNAME; $_SESSION['csrf'] = bin2hex(random_bytes(32)); go('beranda.php');
+ $username = trim((string)($_POST['username'] ?? ''));
+ if (in_array($username, DEMO_USERNAMES, true) && hash_equals(DEMO_PASSWORD, (string)($_POST['password'] ?? ''))) {
+  session_regenerate_id(true); $_SESSION['user'] = $username; $_SESSION['csrf'] = bin2hex(random_bytes(32)); go('beranda.php');
  }
  $error = 'Username atau password salah.';
 }
