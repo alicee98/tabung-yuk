@@ -1,4 +1,0 @@
-Simpan gambar PNG QRIS dengan nama qris.png di folder ini.
-Halaman pembayaran otomatis menampilkan gambar tersebut.
-Jika file belum ada, satu kolom gambar kosong akan ditampilkan.
-Ini proyek simulasi; aplikasi tidak memverifikasi pembayaran nyata.
