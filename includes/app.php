@@ -2,10 +2,28 @@
 // Tabung Yuk: aplikasi belajar tanpa database. Data hanya disimpan dalam session.
 declare(strict_types=1);
 date_default_timezone_set('Asia/Jakarta');
+// Buffer output so encrypted session cookies can be written before redirects/HTML.
+ob_start();
+$cloudSession = getenv('VERCEL') === '1' || getenv('TABUNG_SESSION_DRIVER') === 'cookie';
+define('TABUNG_CLOUD_SESSION', $cloudSession);
+define('MAX_GOALS', $cloudSession ? 10 : 50);
+define('MAX_TRANSACTIONS', $cloudSession ? 30 : 1000);
+$secureCookie = getenv('VERCEL') === '1' || (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+if ($cloudSession) {
+    $secret = (string)getenv('TABUNG_APP_KEY');
+    if (strlen($secret) < 32) { require __DIR__.'/setup.php'; exit; }
+    require_once __DIR__.'/cookie_session.php';
+    session_set_save_handler(new TabungCookieSession($secret, $secureCookie), true);
+}
 ini_set('session.use_strict_mode', '1');
-session_set_cookie_params(['httponly' => true, 'samesite' => 'Lax']);
+ini_set('session.use_only_cookies', '1');
+session_set_cookie_params(['path'=>'/', 'secure'=>$secureCookie, 'httponly'=>true, 'samesite'=>'Lax']);
 session_start();
-header('Cache-Control: no-store');
+register_shutdown_function(function (): void {
+    if (session_status() === PHP_SESSION_ACTIVE) session_write_close();
+});
+header('Cache-Control: private, no-store');
+header('Vercel-CDN-Cache-Control: no-store');
 header('X-Content-Type-Options: nosniff');
 header('X-Frame-Options: DENY');
 const DEMO_USERNAME = 'farisah01';
@@ -43,6 +61,6 @@ function require_login(): void { if (empty($_SESSION['user'])) go('login.php'); 
 function page_start(string $title, string $active, string $subtitle): void {
 ?><!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title><?=e($title)?> | Tabung Yuk</title><meta name="theme-color" content="#282464"><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="assets/style.css"><script src="assets/app.js" defer></script></head><body><a class="skip" href="#main">Lewati navigasi</a><aside class="sidebar"><a class="brand" href="beranda.php"><span class="brand-mark">ty.</span><span>Tabung Yuk<small>SEDIKIT JADI BUKIT</small></span></a><div class="nav-label">MENU UTAMA</div><nav aria-label="Navigasi utama"><?php foreach (['beranda'=>['home','Beranda'],'jadwal'=>['calendar','Jadwal tabungan'],'deposit'=>['wallet','Deposit'],'dashboard'=>['chart','Dashboard'],'riwayat'=>['clock','Riwayat']] as $file=>$item): ?><a class="nav-item <?=$active===$file?'active':''?>" href="<?=$file?>.php" <?=$active===$file?'aria-current="page"':''?>><?=icon($item[0])?><?=$item[1]?></a><?php endforeach ?></nav><div class="sidebar-bottom"><div class="demo-tag">PROYEK SEKOLAH</div><p>Latihan menabung.<br>Langkah kecil, tujuan besar.</p><form action="logout.php" method="post"><?=csrf()?><button class="logout" type="submit"><?=icon('logout')?>Keluar</button></form></div></aside><div class="workspace"><header class="topbar"><span>Aplikasi tabungan pelajar <span class="pill">Mode simulasi</span></span><div class="user"><span class="avatar">F</span><span>Farisah<small>Anggota Kelompok 5</small></span></div></header><main id="main"><div class="page-heading"><div><div class="eyebrow">TABUNG YUK / <?=e(strtoupper($title))?></div><h1><?=e($title)?></h1><p><?=e($subtitle)?></p></div><span class="date"><?=date('d M Y')?></span></div><?php if(isset($_SESSION['flash'])): [$text,$type]=$_SESSION['flash']; unset($_SESSION['flash']); ?><div class="alert <?=e($type)?>" role="status"><?=e($text)?></div><?php endif ?><?php
 }
-function page_end(): void { ?><footer class="footer"><span>Tabung Yuk · Kelompok 5</span><span>Data sementara selama sesi. Keluar akan menghapus data.</span></footer></main></div></body></html><?php }
+function page_end(): void { ?><footer class="footer"><span>Tabung Yuk · Kelompok 5</span><span>Data sementara<?=TABUNG_CLOUD_SESSION ? ' · maks. 4 jam tanpa aktivitas' : ''?>. Keluar menghapus data.</span></footer></main></div></body></html><?php }
 function errors(array $errors): void { if ($errors): ?><div class="alert error" role="alert"><strong>Periksa kembali isian Anda.</strong><ul><?php foreach($errors as $error): ?><li><?=e($error)?></li><?php endforeach ?></ul></div><?php endif; }
 function empty_state(string $title, string $text, string $href, string $label): void { ?><div class="empty"><?=icon('target')?><h3><?=e($title)?></h3><p><?=e($text)?></p><a class="btn primary" href="<?=e($href)?>"><?=e($label)?></a></div><?php }
