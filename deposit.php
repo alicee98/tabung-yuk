@@ -8,7 +8,7 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
  if(!$nominal) $errors[]='Nominal harus berupa angka bulat antara Rp1 dan Rp1.000.000.000.';
  if(strlen($note)>300) $errors[]='Keterangan terlalu panjang. Gunakan maksimal 100 karakter.';
  if(count_status('pending')>=20) $errors[]='Selesaikan atau batalkan deposit yang menunggu (maksimal 20).';
- if(count($_SESSION['transactions'])>=1000) $errors[]='Batas 1.000 transaksi per sesi tercapai.';
+ if(count($_SESSION['transactions'])>=MAX_TRANSACTIONS) $errors[]='Batas '.MAX_TRANSACTIONS.' transaksi per sesi demo tercapai. Keluar untuk memulai sesi baru.';
  if(!$errors) {
   // Acak baru per transaksi, berbeda dari transaksi sebelumnya. Bukan penggabungan string.
   $used=[]; foreach($_SESSION['transactions'] as $t) if($t['status']==='pending') $used[$t['total']]=true;

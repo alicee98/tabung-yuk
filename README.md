@@ -3,7 +3,13 @@
 Aplikasi tabungan pelajar untuk proyek lintas bidang Keuangan dan Informatika.
 Kelompok 5: Farisah, Benaya, Andrian, Almi, Lutfi (mengikuti contoh PDF).
 
-HTML + PHP + CSS, dengan sedikit JavaScript untuk tombol nominal, tampilkan password, dan hitung mundur. Semua alur utama tetap berjalan tanpa JavaScript. Tidak memakai database, Composer, npm, framework, CDN, atau koneksi internet.
+HTML + PHP + CSS, dengan sedikit JavaScript untuk tombol nominal, tampilkan password, dan hitung mundur. Semua alur utama tetap berjalan tanpa JavaScript. Aplikasi tidak membutuhkan database, Composer, framework, atau CDN. Localhost dapat berjalan offline; Vercel mengunduh runtime PHP saat deployment.
+
+## Buka sebagai website online
+
+Repository ini sudah dilengkapi konfigurasi Vercel. Ikuti **[panduan Vercel dari HP](VERCEL.md)**: impor repository, gunakan preset **Other**, dan atur environment `TABUNG_APP_KEY`. Login demo tetap `farisah01` / `tabung123`.
+
+Vercel memakai cookie terenkripsi untuk session tanpa database. Localhost memakai session PHP biasa. Sesi Vercel maksimal 4 jam tanpa aktivitas, 10 tujuan, dan 30 transaksi; gunakan satu tab secara berurutan untuk demo. Pembayaran tetap simulasi.
 
 ## Menjalankan dengan XAMPP (Windows)
 
@@ -24,7 +30,7 @@ Akun untuk tugas localhost, ditetapkan dalam `includes/app.php`. Ini bukan siste
 
 ## Alternatif: PHP bawaan
 
-Gunakan PHP 7.4 atau lebih baru (disarankan PHP 8.x), tanpa ekstensi tambahan. Dari terminal di dalam folder `tabung-yuk`, jalankan:
+Untuk localhost gunakan PHP 7.4 atau lebih baru (disarankan PHP 8.x). Mode cookie di Vercel memakai PHP 8.5 beserta OpenSSL dan zlib yang disertakan runtime. Dari terminal di dalam folder `tabung-yuk`, jalankan:
 
 ```sh
 php -S localhost:8000
@@ -86,7 +92,7 @@ Aplikasi ini **simulasi tugas sekolah**. Menampilkan gambar QRIS tidak membuat i
 
 ## Data tanpa database
 
-Data tujuan, jadwal, dan transaksi disimpan di `$_SESSION` PHP. Refresh mempertahankan data selama session masih aktif. Tiap session browser terpisah. Data bersifat sementara; keluar menghapus data, dan sesi dapat hilang ketika cookie/session berakhir atau dibersihkan. Aplikasi tidak menyimpan arsip jangka panjang dan tidak mengirim pengingat terjadwal.
+Data tujuan, jadwal, dan transaksi tetap diproses melalui `$_SESSION` PHP. Pada localhost penyimpanannya memakai session server biasa; pada Vercel snapshot session disimpan dalam cookie terenkripsi (lihat VERCEL.md). Refresh mempertahankan data selama session masih aktif. Tiap session browser terpisah. Data bersifat sementara; keluar menghapus data, dan sesi dapat hilang ketika cookie/session berakhir atau dibersihkan. Aplikasi tidak menyimpan arsip jangka panjang dan tidak mengirim pengingat terjadwal.
 
 Jadwal harian/mingguan dihitung dari tanggal mulai. Jadwal bukan pendebitan otomatis. Nominal deposit boleh berbeda dari nominal rutin. Target yang tercapai tetap bisa menerima setoran tambahan dan progres visual dibatasi 100%, sementara saldo asli tetap ditampilkan utuh.
 
