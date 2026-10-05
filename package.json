@@ -3,5 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "description": "Proyek tabungan HTML, PHP, dan CSS tanpa database",
-  "engines": { "node": "22.x" }
+  "engines": {
+    "node": "22.x"
+  },
+  "dependencies": {
+    "@vercel/analytics": "^2.0.1"
+  }
 }
