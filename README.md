@@ -11,7 +11,8 @@ Tabung Yuk adalah aplikasi web untuk merencanakan tujuan tabungan, mencatat depo
 ## Fitur
 
 - Login dengan profil pengguna sesuai akun yang digunakan.
-- Pembuatan tujuan tabungan dengan target, nominal rutin, serta jadwal harian atau mingguan.
+- Pembuatan jadwal tabungan dengan hingga 5 barang; total harga menjadi target otomatis, atau target dapat diisi tanpa barang.
+- Prediksi jumlah hari dan tanggal target tercapai berdasarkan saldo, nominal rutin, dan jadwal harian atau mingguan.
 - Deposit yang dikaitkan dengan tujuan tabungan.
 - Nominal pembayaran dengan tambahan kode acak 001–999.
 - Halaman QRIS dengan batas waktu, konfirmasi simulasi, dan pembatalan transaksi.
@@ -32,6 +33,12 @@ Tabung Yuk adalah aplikasi web untuk merencanakan tujuan tabungan, mencatat depo
 | Riwayat | Daftar transaksi beserta statusnya. |
 
 Alur utama: **Login → Buat tujuan → Deposit → Konfirmasi simulasi → Dashboard dan riwayat.**
+
+## Prediksi waktu tabungan
+
+Semua barang dalam satu jadwal berbagi saldo. Sisa target dibagi nominal rutin dan dibulatkan ke atas untuk menentukan jumlah setoran yang diperlukan. Tanggal selesai mengikuti tanggal setoran berikutnya setelah hari ini dan frekuensi jadwal.
+
+Contoh: target Rp5.000.000, saldo Rp3.200.000, dan setoran Rp100.000 per hari membutuhkan 18 setoran lagi. Jika jadwal sudah berjalan, perkiraannya 18 hari. Prediksi mengasumsikan setoran rutin tepat jadwal; hanya transaksi berhasil yang masuk saldo.
 
 ## Teknologi
 
