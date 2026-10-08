@@ -77,3 +77,5 @@ $profile = USER_PROFILES[$username] ?? ['name' => 'Pengguna', 'avatar' => 'P'];
 function page_end(): void { ?><footer class="footer"><span>Tabung Yuk · Kelompok 5</span><span>Data sementara<?=TABUNG_CLOUD_SESSION ? ' · maks. 4 jam tanpa aktivitas' : ''?>. Keluar menghapus data.</span></footer></main></div></body></html><?php }
 function errors(array $errors): void { if ($errors): ?><div class="alert error" role="alert"><strong>Periksa kembali isian Anda.</strong><ul><?php foreach($errors as $error): ?><li><?=e($error)?></li><?php endforeach ?></ul></div><?php endif; }
 function empty_state(string $title, string $text, string $href, string $label): void { ?><div class="empty"><?=icon('target')?><h3><?=e($title)?></h3><p><?=e($text)?></p><a class="btn primary" href="<?=e($href)?>"><?=e($label)?></a></div><?php }
+
+require_once __DIR__.'/savings_plan.php';
