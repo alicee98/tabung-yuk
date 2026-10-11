@@ -89,3 +89,92 @@ if (itemEditor) {
   target.addEventListener('input', () => { if (!target.readOnly) manualTarget = target.value; });
   update();
 }
+
+
+// Login story: autoplay, keyboard controls and horizontal swipes.
+const storyCarousel = document.querySelector('[data-story-carousel]');
+if (storyCarousel) {
+  const slides = [...storyCarousel.querySelectorAll('[data-story-slide]')];
+  const selectors = [...storyCarousel.querySelectorAll('[data-story-select]')];
+  const pauseButton = storyCarousel.querySelector('[data-story-pause]');
+  const counter = storyCarousel.querySelector('[data-story-counter]');
+  const status = storyCarousel.querySelector('[data-story-status]');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let current = 0;
+  let playing = !reducedMotion.matches;
+  let hovered = false;
+  let focused = false;
+  let timer;
+  let gesture = null;
+  slides.forEach(slide => { slide.hidden = false; });
+  storyCarousel.querySelector('[data-story-controls]').hidden = false;
+  const schedule = () => {
+    window.clearTimeout(timer);
+    if (playing && !hovered && !focused && !document.hidden && !gesture) {
+      timer = window.setTimeout(() => show(current + 1), 6000);
+    }
+  };
+  const show = (index, announce = false) => {
+    current = (index + slides.length) % slides.length;
+    slides.forEach((slide, i) => {
+      const active = i === current;
+      slide.classList.toggle('is-active', active);
+      slide.setAttribute('aria-hidden', String(!active));
+      slide.inert = !active;
+      selectors[i].setAttribute('aria-pressed', String(active));
+    });
+    counter.textContent = `${String(current + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
+    if (announce) status.textContent = `Slide ${current + 1} dari ${slides.length}: ${slides[current].querySelector('.story-label').textContent}.`;
+    schedule();
+  };
+  const updatePlayback = () => {
+    pauseButton.textContent = playing ? 'Jeda' : 'Putar';
+    pauseButton.setAttribute('aria-label', playing ? 'Jeda pergantian slide otomatis' : 'Putar slide otomatis');
+    schedule();
+  };
+  selectors.forEach((button, i) => button.addEventListener('click', () => show(i, true)));
+  storyCarousel.querySelector('[data-story-prev]').addEventListener('click', () => show(current - 1, true));
+  storyCarousel.querySelector('[data-story-next]').addEventListener('click', () => show(current + 1, true));
+  pauseButton.addEventListener('click', () => { playing = !playing; updatePlayback(); });
+  storyCarousel.addEventListener('keydown', event => {
+    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+    event.preventDefault();
+    show(current + (event.key === 'ArrowRight' ? 1 : -1), true);
+  });
+  storyCarousel.addEventListener('pointerenter', event => {
+    if (event.pointerType !== 'mouse') return;
+    hovered = true; schedule();
+  });
+  storyCarousel.addEventListener('pointerleave', event => {
+    if (event.pointerType !== 'mouse') return;
+    hovered = false; schedule();
+  });
+  storyCarousel.addEventListener('focusin', () => { focused = true; schedule(); });
+  storyCarousel.addEventListener('focusout', event => {
+    focused = storyCarousel.contains(event.relatedTarget); schedule();
+  });
+  const surface = storyCarousel.querySelector('[data-story-slides]');
+  surface.addEventListener('pointerdown', event => {
+    if (!event.isPrimary || event.button !== 0) return;
+    gesture = {id: event.pointerId, x: event.clientX, y: event.clientY};
+    surface.setPointerCapture(event.pointerId);
+    schedule();
+  });
+  surface.addEventListener('pointerup', event => {
+    if (!gesture || event.pointerId !== gesture.id) return;
+    const dx = event.clientX - gesture.x;
+    const dy = event.clientY - gesture.y;
+    gesture = null;
+    if (Math.abs(dx) >= 45 && Math.abs(dx) > Math.abs(dy) * 1.5) show(current + (dx < 0 ? 1 : -1), true);
+    else schedule();
+  });
+  const cancelGesture = () => { gesture = null; schedule(); };
+  surface.addEventListener('pointercancel', cancelGesture);
+  surface.addEventListener('lostpointercapture', cancelGesture);
+  document.addEventListener('visibilitychange', schedule);
+  const motionChanged = () => { playing = !reducedMotion.matches; updatePlayback(); };
+  if (reducedMotion.addEventListener) reducedMotion.addEventListener('change', motionChanged);
+  else reducedMotion.addListener(motionChanged);
+  show(0);
+  updatePlayback();
+}
