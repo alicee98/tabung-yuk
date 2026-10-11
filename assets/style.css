@@ -56,3 +56,44 @@ input[readonly]{background:#eeecf9;color:var(--purple);font-weight:650}
 .plan-estimate>small{display:block;font-size:10px;color:#667660;line-height:1.6}
 @media(max-width:1100px){.item-editor__row{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.item-editor__remove{grid-column:1 / -1;height:30px;justify-self:end}.item-editor{padding:14px}}
 @media(max-width:400px){.item-editor__row{grid-template-columns:1fr}.item-editor__remove{grid-column:auto}.plan-items li{flex-wrap:wrap;gap:4px}.plan-items li strong{margin-left:auto}}
+
+/* Login carousel: stable slide height, accessible controls and mobile layout. */
+.login-layout{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.login-story,.login-form-wrap{min-width:0}
+.story-slides{display:grid;touch-action:pan-y pinch-zoom;user-select:none}
+.story-slide{grid-area:1 / 1;min-width:0;visibility:hidden;opacity:0;pointer-events:none;transition:opacity .35s ease}
+.story-slide.is-active{visibility:visible;opacity:1;pointer-events:auto}
+.story-slide h1{font-size:clamp(36px,4vw,60px);line-height:1.14;overflow-wrap:break-word}
+.story-slide p{max-width:420px;margin:24px 0 0;font-size:15px;line-height:1.8;color:#d1cce8}
+.story-progress__heading{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.story-progress .story-tabs{display:flex;gap:8px;margin-top:6px}
+.story-tabs button{display:flex;align-items:center;flex:1;min-width:0;min-height:44px;padding:8px 0;border:0;background:transparent}
+.story-tabs button span{display:block;width:100%;height:4px;border-radius:99px;background:#ffffff30;transition:background .25s ease}
+.story-tabs button[aria-pressed="true"] span{background:var(--lime)}
+.story-progress .story-navigation{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.story-navigation p{margin:0;max-width:none;font-size:11px;line-height:1.6}
+.story-progress .story-buttons{display:flex;gap:5px;flex-shrink:0}
+.story-buttons button{min-width:44px;min-height:44px;padding:6px 10px;border:1px solid #ffffff30;border-radius:9px;background:#ffffff08;color:#fff;font-size:12px}
+.story-buttons button[data-story-prev],.story-buttons button[data-story-next]{font-size:25px;line-height:1}
+.story-buttons button:hover{background:#ffffff18}
+.story-carousel:focus-visible,.story-carousel button:focus-visible{outline:3px solid var(--lime);outline-offset:3px}
+@media(max-width:900px){
+ .login-layout{grid-template-columns:minmax(0,1fr)}
+ .login-story{padding:28px 25px}
+ .story-content{margin:0;padding:34px 0 12px}
+ .story-slide h1{font-size:clamp(30px,7vw,44px);line-height:1.2}
+ .story-slide h1 br{display:none}
+ .story-slide h1 em{display:block}
+ .story-label{font-size:9px;margin-bottom:15px}
+ .story-slide p{max-width:540px;margin:18px 0 0;font-size:14px;line-height:1.7}
+ .story-progress{display:block;margin-top:22px;max-width:540px}
+ .story-progress .story-progress__heading{font-size:9px}
+ .login-form-wrap{padding:28px 25px}
+ .login-story>small{display:none}
+}
+@media(max-width:380px){
+ .login-story,.login-form-wrap{padding-left:20px;padding-right:20px}
+ .story-progress .story-navigation{align-items:flex-start;flex-direction:column;gap:10px}
+ .story-progress .story-buttons{align-self:flex-end}
+}
+@media(prefers-reduced-motion:reduce){.story-slide,.story-tabs button span{transition:none}}
