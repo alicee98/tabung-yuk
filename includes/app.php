@@ -28,6 +28,9 @@ header('X-Content-Type-Options: nosniff');
 header('X-Frame-Options: DENY');
 const DEMO_USERNAMES = [
     'farisah01',
+    'andrian02',
+    'almi03',
+    'lutfi04',
     'calista2006',
     'yudha2707'
 ];
@@ -35,6 +38,9 @@ const DEMO_PASSWORD = 'tabung123';
 
 const USER_PROFILES = [
     'farisah01' => ['name' => 'Farisah', 'avatar' => 'F'],
+    'andrian02' => ['name' => 'Andrian', 'avatar' => 'A'],
+    'almi03' => ['name' => 'Almi', 'avatar' => 'A'],
+    'lutfi04' => ['name' => 'Lutfi', 'avatar' => 'L'],
     'calista2006' => ['name' => 'Calista', 'avatar' => 'C'],
     'yudha2707' => ['name' => 'Yudha', 'avatar' => 'Y']
 ];
